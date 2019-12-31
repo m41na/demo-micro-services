@@ -1,21 +1,20 @@
 package works.hop.repo;
 
+import com.practicaldime.zesty.app.AppProvider;
+import com.practicaldime.zesty.app.AppServer;
+
 public class RepoApp {
 
-    private static RepoApp repo;
+    public static AppProvider provider = props -> {
+        AppServer app = AppServer.instance(props);
+        app.get("/repo", (req, res, done) -> {
+            res.send("repo: Completed");
+            done.complete();
+        });
+        return app;
+    };
 
     public static void main(String[] args) {
-        System.out.println("Hello from RepoApp!");
-    }
-
-    public static RepoApp instance() {
-        if (repo == null) {
-            repo = new RepoApp();
-        }
-        return repo;
-    }
-
-    public String fetch(String criteria) {
-        return String.format("searching %s and returning %s", criteria, "from RepoApp");
+        provider.start(args);
     }
 }
