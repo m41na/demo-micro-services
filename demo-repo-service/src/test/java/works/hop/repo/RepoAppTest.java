@@ -8,31 +8,27 @@ import junit.framework.TestSuite;
  * Unit test for simple RepoApp.
  */
 public class RepoAppTest
-    extends TestCase
-{
+        extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public RepoAppTest(String testName )
-    {
-        super( testName );
+    public RepoAppTest(String testName) {
+        super(testName);
     }
 
     /**
      * @return the suite of tests being tested
      */
-    public static Test suite()
-    {
-        return new TestSuite( RepoAppTest.class );
+    public static Test suite() {
+        return new TestSuite(RepoAppTest.class);
     }
 
     /**
      * Rigourous Test :-)
      */
-    public void testApp()
-    {
-        assertTrue( true );
+    public void testApp() {
+        assertTrue(true);
     }
 }

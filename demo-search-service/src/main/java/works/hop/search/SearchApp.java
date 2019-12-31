@@ -1,29 +1,31 @@
 package works.hop.search;
 
-import works.hop.repo.RepoApp;
+import com.practicaldime.zesty.app.AppProvider;
+import com.practicaldime.zesty.app.AppServer;
+import org.eclipse.jetty.http.HttpMethod;
+import works.hop.web.HttpConnect;
+
+import java.util.Collections;
 
 public class SearchApp {
 
-    private static SearchApp service;
-
-    private final RepoApp repo;
-
-    public SearchApp(RepoApp repo) {
-        this.repo = repo;
-    }
+    public static AppProvider provider = props -> {
+        AppServer app = AppServer.instance(props);
+        app.get("/search", (req, res, done) -> {
+            try {
+                HttpConnect.request("http://localhost:7082/repo", HttpMethod.GET, Collections.emptyMap(),
+                        (response) -> {
+                            res.send("repo: " + new String(response.body));
+                        });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            done.complete();
+        });
+        return app;
+    };
 
     public static void main(String[] args) {
-        System.out.println("Hello from SearchApp!");
-    }
-
-    public static SearchApp instance() {
-        if (service == null) {
-            service = new SearchApp(RepoApp.instance());
-        }
-        return service;
-    }
-
-    public String search(String one) {
-        return repo.fetch(one);
+        provider.start(args);
     }
 }

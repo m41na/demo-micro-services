@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>works.hop</groupId>
-  <artifactId>demo-rest-service</artifactId>
-  <name>demo-rest-service</name>
+  <artifactId>demo-search-service</artifactId>
+  <name>demo-search-service</name>
   <version>0.0.1</version>
-  <description>A simple demo-rest-service.</description>
+  <description>A simple demo-search-service.</description>
   <url>http://www.demomicroservices.com</url>
   <build>
     <plugins>
@@ -29,7 +29,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>works.hop.rest.RestApp</mainClass>
+                  <mainClass>works.hop.search.SearchApp</mainClass>
                 </transformer>
               </transformers>
             </configuration>
