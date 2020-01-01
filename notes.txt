@@ -1,0 +1,17 @@
+#create docker image for demo-repo-service
+cd ./demo-repo-service
+docker build -t demo-repo-service .
+#test the image in a container
+docker container run -it demo-repo-service
+
+#create docker image for demo-search-service
+cd ./demo-search-service
+docker build -t demo-search-service .
+#test the image in a container
+docker container run -it demo-search-service
+
+#create docker image for demo-rest-service
+cd ./demo-rest-service
+docker build -t demo-rest-service .
+#test the image in a container
+docker container run -it demo-rest-service
