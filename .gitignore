@@ -23,12 +23,13 @@
 hs_err_pid*
 
 # artifact folders
-/target
-/deploy
+**/target
+**/deploy
 
 # ide's
 .idea
-**/.iml
+**/*.iml
+**/*-reduced-pom.xml
 **/.classpath
 **/.settings
 **/.project
