@@ -12,6 +12,7 @@
         <module>demo-search-service</module>
         <module>demo-repo-service</module>
         <module>demo-web-client</module>
+        <module>demo-open-trace</module>
     </modules>
     <packaging>pom</packaging>
 
