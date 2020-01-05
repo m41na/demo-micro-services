@@ -1,0 +1,42 @@
+{
+   "namespace":"works.hop.queue.entity.avro",
+   "type":"record",
+   "name":"AvroClientRequest",
+   "fields":[
+      {
+         "name":"requestTime",
+         "type":"long"
+      },
+      {
+         "name":"clientId",
+         "type": {
+             "namespace":"works.hop.queue.entity.avro",
+             "type":"record",
+             "name":"AvroClientId",
+             "fields":[
+                {
+                   "name":"hostName",
+                   "type": "string"
+                },
+                {
+                   "name":"ipAddress",
+                   "type":"string"
+                }
+             ]
+          }
+      },
+      {
+         "name":"type",
+         "type": {
+            "namespace":"works.hop.queue.entity.avro",
+            "name":"AvroRequestType",
+            "type": "enum",
+            "symbols" : ["CONNECT", "REQUEST", "CLOSE"]
+         }
+      },
+      {
+         "name":"payload",
+         "type":"string"
+      }
+   ]
+}

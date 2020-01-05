@@ -1,0 +1,2 @@
+#generate avro manually
+java -jar ~/.m2/repository/org/apache/avro/avro-tools/1.9.1/avro-tools-1.9.1.jar compile schema src/main/avro/clientRequest.avro src/main/java/
