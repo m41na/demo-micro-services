@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 echo "prepare to start all apps"
-projects=( "demo-rest-service" "demo-search-service" "demo-repo-service")
+projects=( "demo-rest-service" "demo-repo-service")
 port=7080
 home=$(pwd)
 echo "current home is $home"
@@ -13,4 +13,9 @@ do
     cd "$home"
 done
 
-echo "apps should be ready"
+queue="demo-rest-service"
+cd "$queue"
+"$GRAALVM_HOME"/bin/java -cp deploy/demo-rest-service-0.0.1-dist.jar works.hop.rest.queue.QueApp &
+cd "$home"
+
+echo "apps should be ready now"
