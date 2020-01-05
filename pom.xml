@@ -9,11 +9,18 @@
     <version>0.0.1</version>
     <modules>
         <module>demo-rest-service</module>
-        <module>demo-search-service</module>
+        <module>demo-queue-server</module>
+        <module>demo-queue-client</module>
         <module>demo-repo-service</module>
-        <module>demo-web-client</module>
+        <module>demo-http-client</module>
         <module>demo-open-trace</module>
     </modules>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
     <packaging>pom</packaging>
 
     <name>demo-micro-services</name>

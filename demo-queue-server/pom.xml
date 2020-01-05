@@ -5,35 +5,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>works.hop</groupId>
-    <artifactId>demo-rest-service</artifactId>
+    <artifactId>demo-queue-server</artifactId>
     <version>0.0.1</version>
 
-    <name>demo-rest-service</name>
-    <description>A simple demo-rest-service.</description>
+    <name>demo-queue-server</name>
+    <description>A simple demo queue-server.</description>
     <url>http://www.demomicroservices.com</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
+        <avro.version>1.9.1</avro.version>
+        <jackson.version>2.10.1</jackson.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.practicaldime.works</groupId>
-            <artifactId>zesty-router</artifactId>
-            <version>0.1.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>works.hop</groupId>
-            <artifactId>demo-http-client</artifactId>
+            <artifactId>demo-queue-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
             <groupId>works.hop</groupId>
-            <artifactId>demo-queue-server</artifactId>
+            <artifactId>demo-web-client</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -48,6 +42,12 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
         </dependency>
     </dependencies>
 
@@ -91,7 +91,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>works.hop.rest.RestApp</mainClass>
+                                    <mainClass>works.hop.queue.app.QueApp</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -126,12 +126,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
 </project>
