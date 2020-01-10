@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  repo-service:
+    build: ./demo-repo-service
+    volumes:
+      - ./demo-repo-service/deploy:/usr/local/opt/repo-service
+    ports:
+      - 7082:7082
+      - 8445:8445
+
+  todo-service:
+    build: ./demo-todo-service
+    volumes:
+      - ./demo-todo-service/deploy:/usr/local/opt/todo-service
+    ports:
+      - 7079:7079
+    depends_on:
+      - repo-service
+
+  rest-service:
+    build: ./demo-rest-service
+    volumes:
+      - ./demo-rest-service/deploy:/usr/local/opt/rest-service
+    ports:
+      - 7080:7080
+      - 8443:8443
+    depends_on:
+      - todo-service

@@ -1,34 +1,22 @@
 package works.hop.rest;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
+import org.junit.Test;
+import works.hop.queue.client.QueClient;
+import works.hop.todo.domain.TodoCriteria;
 
-/**
- * Unit test for simple RestApp.
- */
-public class RestAppTest
-        extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public RestAppTest(String testName) {
-        super(testName);
-    }
+import static org.junit.Assert.assertEquals;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(RestAppTest.class);
-    }
+@Ignore("create more useful, cross-container tests")
+public class RestAppTest {
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp() {
-        assertTrue(true);
+    @Test
+    public void testGetTodoList() throws JsonProcessingException {
+        QueClient client = QueClient.start("localhost", 7079);
+        ObjectMapper mapper = new ObjectMapper();
+        String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(null, null, 10, 0, "TODO_LIST")));
+        System.out.println(payload);
     }
 }

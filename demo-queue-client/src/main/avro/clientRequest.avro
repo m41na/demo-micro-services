@@ -1,7 +1,7 @@
 {
    "namespace":"works.hop.queue.entity.avro",
    "type":"record",
-   "name":"AvroClientRequest",
+   "name":"AvroQueRequest",
    "fields":[
       {
          "name":"requestTime",

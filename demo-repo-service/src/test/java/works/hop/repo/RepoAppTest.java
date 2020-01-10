@@ -1,15 +1,11 @@
 package works.hop.repo;
 
-import com.google.gson.Gson;
 import com.practicaldime.zesty.app.AppServer;
 import com.practicaldime.zesty.testing.server.ZestyJUnit4ClassRunner;
 import com.practicaldime.zesty.testing.server.ZestyProvider;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.client.util.BytesContentProvider;
-import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.HttpMethod;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,13 +19,13 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(ZestyJUnit4ClassRunner.class)
-@Ignore("figure out how to mock the tracer")
+@Ignore("run only during integration testing")
 public class RepoAppTest {
 
-    private RepoApp app;
     public static final Integer PORT = 9099;
     public static final String HOST = "127.0.0.1";
     public static final Properties props = new Properties();
+    private RepoApp app;
 
     @ZestyProvider
     public AppServer provider() {

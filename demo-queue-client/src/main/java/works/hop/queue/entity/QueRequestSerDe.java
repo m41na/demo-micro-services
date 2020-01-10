@@ -8,7 +8,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.*;
 import org.apache.avro.util.Utf8;
 import works.hop.queue.entity.avro.AvroClientId;
-import works.hop.queue.entity.avro.AvroClientRequest;
+import works.hop.queue.entity.avro.AvroQueRequest;
 import works.hop.queue.entity.avro.AvroRequestType;
 
 import java.io.ByteArrayOutputStream;
@@ -21,7 +21,7 @@ public class QueRequestSerDe {
     private final DatumWriter<GenericRecord> datumWriter;
 
     private QueRequestSerDe() {
-        Schema classSchema = AvroClientRequest.getClassSchema();
+        Schema classSchema = AvroQueRequest.getClassSchema();
         datumReader = new GenericDatumReader<>(classSchema);
         datumWriter = new GenericDatumWriter<>(classSchema);
     }
@@ -33,7 +33,7 @@ public class QueRequestSerDe {
         return instance;
     }
 
-    public AvroClientRequest deserialize(byte[] bytes) throws Exception {
+    public AvroQueRequest deserialize(byte[] bytes) throws Exception {
         BinaryDecoder decoder = DecoderFactory.get().binaryDecoder(bytes, null);
         GenericRecord record = datumReader.read(null, decoder);
 
@@ -42,7 +42,7 @@ public class QueRequestSerDe {
         String payload = ((Utf8) record.get("payload")).toString();
         GenericData.Record clientId = ((GenericData.Record) record.get("clientId"));
 
-        return AvroClientRequest.newBuilder()
+        return AvroQueRequest.newBuilder()
                 .setRequestTime(requestTime)
                 .setType(AvroRequestType.valueOf(type.toString()))
                 .setPayload(payload)
@@ -53,11 +53,11 @@ public class QueRequestSerDe {
     }
 
     public QueRequest deserializer(byte[] bytes) throws Exception {
-        return QueRequest.fromAvroClientRequest(deserialize(bytes));
+        return QueRequest.fromAvroQueRequest(deserialize(bytes));
     }
 
-    public byte[] serialize(AvroClientRequest entity) throws Exception {
-        GenericData.Record record = new GenericData.Record(AvroClientRequest.getClassSchema());
+    public byte[] serialize(AvroQueRequest entity) throws Exception {
+        GenericData.Record record = new GenericData.Record(AvroQueRequest.getClassSchema());
 
         record.put("requestTime", entity.getRequestTime());
         record.put("type", entity.getType());
@@ -77,6 +77,6 @@ public class QueRequestSerDe {
     }
 
     public byte[] serializer(QueRequest entity) throws Exception {
-        return serialize(QueRequest.fromClientRequest(entity));
+        return serialize(QueRequest.fromQueRequest(entity));
     }
 }

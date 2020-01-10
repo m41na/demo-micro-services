@@ -1,17 +1,28 @@
+#prepeare ide terminal
+conda deactivate && source ~/.profile && graal && pwd
+
+#create a network for the applications to connect with
+docker network create demo-micro-network
+
 #create docker image for demo-repo-service
 cd ./demo-repo-service
 docker build -t demo-repo-service .
+docker build --build-arg HTTP_PORT=7082 --build-arg HTTP_HOST=127.0.0.1 -t demo-repo-service .
 #test the image in a container
-docker container run -it demo-repo-service
+docker container run --rm -it --name repo-service -p 7082:7082 -p 8445:8445 -e "HTTP_HOST=0.0.0.0" demo-repo-service:latest
 
-#create docker image for demo-search-service
-cd ./demo-search-service
-docker build -t demo-search-service .
+#create docker image for demo-todo-service
+cd ./demo-todo-service
+docker build -t demo-todo-service .
 #test the image in a container
-docker container run -it demo-search-service
+docker container run -e "repoPort=7082" -e "repoHost=localhost" --rm -it --name todo-service -p 7079:7079 demo-todo-service:latest
+#use -d instead of -it for detached mode
 
 #create docker image for demo-rest-service
 cd ./demo-rest-service
 docker build -t demo-rest-service .
 #test the image in a container
-docker container run -it demo-rest-service
+docker container run -e "todoPort=7082" -e "todoHost=localhost" -e "HTTP_HOST=0.0.0.0" --rm -it --name rest-service -p 7080:7080 -p 8443:8443 demo-rest-service:latest
+
+#remove these containers
+docker container rm -f $(docker container ls -qa)
