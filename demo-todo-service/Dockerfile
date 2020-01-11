@@ -4,8 +4,8 @@ ARG APP_NAME=demoTodoService
 ARG APP_CONFIG=app-config.properties
 ARG DEPLOY_DIR=/usr/local/opt/todo-service
 ARG HTTP_PORT=7079
-ARG HTTP_HOST=localhost
-ARG REPO_HOST=localhost
+ARG HTTP_HOST=0.0.0.0
+ARG REPO_HOST=repo
 ARG REPO_PORT=7082
 
 ENV APP_NAME=$APP_NAME

@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import static works.hop.todo.domain.TodoAction.*;
+
 public class RestApp {
 
     private final Tracer tracer;
@@ -33,7 +35,7 @@ public class RestApp {
 
                 try {
                     QueClient client = startClient(clientProps);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, "CREATE_TODO")));
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, CREATE_TODO)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
                     span.setTag("RestApp response", payload);
@@ -57,7 +59,7 @@ public class RestApp {
 
                 try {
                     QueClient client = startClient(clientProps);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(todo.name, todo.completed, 0, 10, "UPDATE_TODO")));
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(todo.name, todo.completed, 0, 10, UPDATE_TODO)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
 
@@ -82,7 +84,7 @@ public class RestApp {
                 Integer limit = Integer.parseInt(Optional.ofNullable(req.param("size")).orElse("10"));
                 try {
                     QueClient client = startClient(clientProps);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(null, null, limit, offset, "TODO_LIST")));
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(null, null, limit, offset, TODO_LIST)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
                     span.setTag("RestApp response", payload);
@@ -105,7 +107,7 @@ public class RestApp {
 
                 try {
                     QueClient client = startClient(clientProps);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, "DELETE_TODO")));
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, DELETE_TODO)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
                     span.setTag("RestApp response", payload);

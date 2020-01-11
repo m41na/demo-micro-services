@@ -124,22 +124,22 @@ public class TodoService implements QueHandler<TodoCriteria> {
     @Override
     public void handle(TodoCriteria todo, Consumer<String> handler) {
         switch (todo.action) {
-            case "CREATE_TODO": {
+            case CREATE_TODO: {
                 logger.info("create new todo item");
                 createTodoItem(todo.name, handler);
                 break;
             }
-            case "UPDATE_TODO": {
+            case UPDATE_TODO: {
                 logger.info("update todo item");
                 updateTodoItem(todo.name, todo.completed, handler);
                 break;
             }
-            case "TODO_LIST": {
+            case TODO_LIST: {
                 logger.info("fetch list of todo items");
                 getTodoList(todo.offset, todo.limit, handler);
                 break;
             }
-            case "DELETE_TODO": {
+            case DELETE_TODO: {
                 logger.info("remove todo item");
                 deleteTodoItem(todo.name, handler);
                 break;

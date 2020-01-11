@@ -9,10 +9,10 @@ public class TodoCriteria {
     public final Boolean completed;
     public final Integer limit;
     public final Integer offset;
-    public final String action;
+    public final TodoAction action;
 
     @JsonCreator
-    public TodoCriteria(@JsonProperty("name") String name, @JsonProperty("completed") Boolean completed, @JsonProperty("limit") Integer limit, @JsonProperty("offset") Integer offset, @JsonProperty("action") String action) {
+    public TodoCriteria(@JsonProperty("name") String name, @JsonProperty("completed") Boolean completed, @JsonProperty("limit") Integer limit, @JsonProperty("offset") Integer offset, @JsonProperty("action") TodoAction action) {
         this.name = name;
         this.completed = completed;
         this.limit = limit;

@@ -3,7 +3,7 @@ FROM adoptopenjdk/openjdk11:jre-11.0.5_10-alpine
 ARG APP_NAME=demoRepoService
 ARG DEPLOY_DIR=/usr/local/opt/repo-service
 ARG HTTP_PORT=7082
-ARG HTTP_HOST=localhost
+ARG HTTP_HOST=0.0.0.0
 ARG HTTPS_PORT=8445
 
 ENV APP_NAME=$APP_NAME
