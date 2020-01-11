@@ -1,6 +1,7 @@
 package works.hop.repo;
 
 import com.practicaldime.zesty.app.AppServer;
+import com.practicaldime.zesty.app.IServer;
 import com.practicaldime.zesty.testing.server.ZestyJUnit4ClassRunner;
 import com.practicaldime.zesty.testing.server.ZestyProvider;
 import org.eclipse.jetty.client.HttpClient;
@@ -28,7 +29,7 @@ public class RepoAppTest {
     private RepoApp app;
 
     @ZestyProvider
-    public AppServer provider() {
+    public IServer provider() {
         app = new RepoApp(new TodoDao("/test-todos-db.properties", "/test-create-tables.sql", "/test-initial-data.sql"));
         return app.getProvider().provide(Collections.emptyMap());
     }
