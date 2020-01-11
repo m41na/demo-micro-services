@@ -16,7 +16,6 @@
         <module>demo-http-client</module>
         <module>demo-repo-service</module>
         <module>demo-open-trace</module>
-        <module>demo-kafka-dispatch</module>
     </modules>
 
     <packaging>pom</packaging>
