@@ -1,35 +1,33 @@
 package works.hop.queue;
 
+import works.hop.queue.entity.QueHandler;
 import works.hop.queue.entity.QueRequest;
-import works.hop.queue.entity.QueRequestListener;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public abstract class QueObserver {
+public class QueObserver {
 
-    private final Set<QueRequestListener> listeners = new HashSet<>();
+    private final Set<QueHandler> handlers = new HashSet<>();
 
-    public void register(QueRequestListener listener) {
+    public void register(QueHandler listener) {
         System.out.println("registering new listener");
-        listeners.add(listener);
+        handlers.add(listener);
     }
 
-    public void unregister(QueRequestListener listener) {
+    public void unregister(QueHandler listener) {
         System.out.println("unregistering existing listener");
-        listeners.remove(listener);
+        handlers.remove(listener);
     }
 
-    public void receive(QueRequest request, Consumer<String> handler) {
-        this.listeners.forEach(listener -> listener.onMessage(request, handler));
+    public void receive(QueRequest request, Consumer<String> consumer) {
+        this.handlers.stream().filter(handler -> handler.canHandle(request)).forEach(listener -> listener.onMessage(request, consumer));
     }
-
-    public abstract void complete();
 
     public void onEvent(QueEvent event) {
         if (event.request != null) {
-            QueRequest request = QueRequest.fromAvroClientRequest(event.request);
+            QueRequest request = QueRequest.fromAvroQueRequest(event.request);
             receive(request, event.handler);
         }
     }

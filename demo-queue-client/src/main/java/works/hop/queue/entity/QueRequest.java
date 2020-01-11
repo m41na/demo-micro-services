@@ -8,7 +8,7 @@ import org.apache.avro.io.DatumWriter;
 import org.apache.avro.io.EncoderFactory;
 import org.apache.avro.specific.SpecificDatumWriter;
 import works.hop.queue.entity.avro.AvroClientId;
-import works.hop.queue.entity.avro.AvroClientRequest;
+import works.hop.queue.entity.avro.AvroQueRequest;
 import works.hop.queue.entity.avro.AvroRequestType;
 
 import java.io.ByteArrayOutputStream;
@@ -18,6 +18,9 @@ import java.nio.ByteBuffer;
 public class QueRequest {
 
     public Long requestTime;
+    public String requestId;
+    public String groupId;
+    public String topicId;
     public ClientId clientId;
     public RequestType type;
     public String payload;
@@ -30,8 +33,8 @@ public class QueRequest {
         this.payload = payload;
     }
 
-    public static AvroClientRequest fromClientRequest(QueRequest request) {
-        AvroClientRequest entity = AvroClientRequest.newBuilder()
+    public static AvroQueRequest fromQueRequest(QueRequest request) {
+        AvroQueRequest entity = AvroQueRequest.newBuilder()
                 .setType(AvroRequestType.valueOf(request.type.toString()))
                 .setClientId(AvroClientId.newBuilder()
                         .setHostName(request.clientId.hostName)
@@ -41,7 +44,7 @@ public class QueRequest {
         return entity;
     }
 
-    public static QueRequest fromAvroClientRequest(AvroClientRequest entity) {
+    public static QueRequest fromAvroQueRequest(AvroQueRequest entity) {
         QueRequest request = new QueRequest(
                 entity.getRequestTime(),
                 new ClientId(entity.getClientId().getIpAddress().toString(), entity.getClientId().getHostName().toString()),
@@ -51,19 +54,19 @@ public class QueRequest {
         return request;
     }
 
-    public static byte[] serialize(AvroClientRequest entity) throws IOException {
+    public static byte[] serialize(AvroQueRequest entity) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         Schema schema = entity.getSchema();
-        DatumWriter<AvroClientRequest> outputDatumWriter = new SpecificDatumWriter<>(schema);
+        DatumWriter<AvroQueRequest> outputDatumWriter = new SpecificDatumWriter<>(schema);
         BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(baos, null);
         outputDatumWriter.write(entity, encoder);
         encoder.flush();
         return baos.toByteArray();
     }
 
-    public static AvroClientRequest deserialize(byte[] bytes) throws IOException {
-        return AvroClientRequest.fromByteBuffer(ByteBuffer.wrap(bytes));
+    public static AvroQueRequest deserialize(byte[] bytes) throws IOException {
+        return AvroQueRequest.fromByteBuffer(ByteBuffer.wrap(bytes));
     }
 
     public enum RequestType {

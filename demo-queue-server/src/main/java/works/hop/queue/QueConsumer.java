@@ -1,5 +1,7 @@
 package works.hop.queue;
 
+import works.hop.queue.server.Server;
+
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -22,7 +24,7 @@ public class QueConsumer implements Runnable {
         while (true) {
             try {
                 QueEvent input = queue.take();
-                if (input.equals(QueServer.POISON_PILL)) {
+                if (input.equals(Server.POISON_PILL)) {
                     onMessage(new QueEvent(null, input.handler));
                     break;
                 }

@@ -7,17 +7,22 @@ import com.practicaldime.zesty.servlet.HandlerException;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import works.hop.queue.client.QueClient;
-import works.hop.rest.query.TodoCriteria;
+import works.hop.todo.domain.TodoCriteria;
 import works.hop.trace.AppTracer;
 
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
+
+import static works.hop.todo.domain.TodoAction.*;
 
 public class RestApp {
 
     private final Tracer tracer;
     private final ObjectMapper mapper = new ObjectMapper();
+    private final Properties clientProps;
+
     private final AppProvider provider = new AppProvider() {
         @Override
         public AppServer provide(Map<String, String> props) {
@@ -29,8 +34,8 @@ public class RestApp {
                 span.log("RestApp create new todo  (" + name + ") item");
 
                 try {
-                    QueClient client = QueClient.start("localhost", 7079);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, "CREATE_TODO")));
+                    QueClient client = startClient(clientProps);
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, CREATE_TODO)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
                     span.setTag("RestApp response", payload);
@@ -42,8 +47,7 @@ public class RestApp {
                         ex.printStackTrace();
                         throw new HandlerException(500, "Problem accessing search", ex);
                     }
-                }
-                finally {
+                } finally {
                     done.complete();
                 }
             });
@@ -54,8 +58,8 @@ public class RestApp {
                 TodoCriteria todo = req.body(TodoCriteria.class);
 
                 try {
-                    QueClient client = QueClient.start("localhost", 7079);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(todo.name, todo.completed, 0, 10, "UPDATE_TODO")));
+                    QueClient client = startClient(clientProps);
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(todo.name, todo.completed, 0, 10, UPDATE_TODO)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
 
@@ -68,8 +72,7 @@ public class RestApp {
                         ex.printStackTrace();
                         throw new HandlerException(500, "Problem accessing search", ex);
                     }
-                }
-                finally {
+                } finally {
                     done.complete();
                 }
             });
@@ -80,8 +83,8 @@ public class RestApp {
                 Integer offset = Integer.parseInt(Optional.ofNullable(req.param("start")).orElse("0"));
                 Integer limit = Integer.parseInt(Optional.ofNullable(req.param("size")).orElse("10"));
                 try {
-                    QueClient client = QueClient.start("localhost", 7079);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(null, null, limit, offset, "TODO_LIST")));
+                    QueClient client = startClient(clientProps);
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(null, null, limit, offset, TODO_LIST)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
                     span.setTag("RestApp response", payload);
@@ -93,8 +96,7 @@ public class RestApp {
                         ex.printStackTrace();
                         throw new HandlerException(500, "Problem accessing search", ex);
                     }
-                }
-                finally {
+                } finally {
                     done.complete();
                 }
             });
@@ -104,8 +106,8 @@ public class RestApp {
                 span.log("RepoApp deleting todo item");
 
                 try {
-                    QueClient client = QueClient.start("localhost", 7079);
-                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, "DELETE_TODO")));
+                    QueClient client = startClient(clientProps);
+                    String payload = client.sendMessage(mapper.writeValueAsString(new TodoCriteria(name, false, 0, 10, DELETE_TODO)));
                     res.header("Content-Type", "application/json");
                     res.send(payload);
                     span.setTag("RestApp response", payload);
@@ -117,8 +119,7 @@ public class RestApp {
                         ex.printStackTrace();
                         throw new HandlerException(500, "Problem accessing search", ex);
                     }
-                }
-                finally {
+                } finally {
                     done.complete();
                 }
             });
@@ -126,16 +127,23 @@ public class RestApp {
         }
     };
 
-    public RestApp() {
-        this(AppTracer.tracer());
+    public RestApp(Properties clientProps) {
+        this(clientProps, AppTracer.tracer());
     }
 
-    public RestApp(Tracer tracer) {
+    public RestApp(Properties clientProps, Tracer tracer) {
+        this.clientProps = clientProps;
         this.tracer = tracer;
     }
 
-    public static void main(String[] args) {
-        new RestApp().getProvider().start(args);
+    public static void main(String[] args) throws IOException {
+        Properties clientProps = new Properties();
+        clientProps.load(RestApp.class.getResourceAsStream("/app-config.properties"));
+        new RestApp(clientProps).getProvider().start(args);
+    }
+
+    private QueClient startClient(Properties props) {
+        return QueClient.start(props.getProperty("todo-host"), Integer.valueOf(props.getProperty("todo-port")));
     }
 
     public AppProvider getProvider() {

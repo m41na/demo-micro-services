@@ -1,15 +1,15 @@
 package works.hop.queue;
 
-import works.hop.queue.entity.avro.AvroClientRequest;
+import works.hop.queue.entity.avro.AvroQueRequest;
 
 import java.util.function.Consumer;
 
 public class QueEvent {
 
-    public AvroClientRequest request;
+    public AvroQueRequest request;
     public Consumer<String> handler;
 
-    public QueEvent(AvroClientRequest request, Consumer<String> handler) {
+    public QueEvent(AvroQueRequest request, Consumer<String> handler) {
         this.request = request;
         this.handler = handler;
     }
