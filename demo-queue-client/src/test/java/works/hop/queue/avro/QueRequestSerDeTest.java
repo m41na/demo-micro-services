@@ -2,7 +2,7 @@ package works.hop.queue.avro;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import works.hop.queue.entity.MockAction;
+import works.hop.queue.entity.MockCriteria;
 import works.hop.queue.entity.QueRequest;
 import works.hop.queue.entity.QueRequestSerDe;
 import works.hop.queue.entity.avro.AvroQueRequest;
@@ -19,7 +19,7 @@ public class QueRequestSerDeTest {
     @Test
     public void testSerializeThenDeserialize() throws Exception {
         long requestTime = new Date().getTime();
-        MockAction todo = new MockAction("watch movies", false, "CREATE_TODO");
+        MockCriteria todo = new MockCriteria("watch movies", false, "CREATE_TODO");
         QueRequest entity = new QueRequest(
                 requestTime,
                 new QueRequest.ClientId("127.0.0.1", "test-client"),
@@ -34,7 +34,7 @@ public class QueRequestSerDeTest {
         assertEquals("Expecting '127.0.0.1'", "127.0.0.1", deserialized.getClientId().getIpAddress());
         assertEquals("Expecting 'test-client'", "test-client", deserialized.getClientId().getHostName());
 
-        MockAction deserializedTodo = mapper.readValue(deserialized.getPayload().toString(), MockAction.class);
+        MockCriteria deserializedTodo = mapper.readValue(deserialized.getPayload().toString(), MockCriteria.class);
         assertEquals("Expecting 'watch movies'", "watch movies", deserializedTodo.name);
         assertEquals("Expecting 'false''", false, deserializedTodo.completed);
     }

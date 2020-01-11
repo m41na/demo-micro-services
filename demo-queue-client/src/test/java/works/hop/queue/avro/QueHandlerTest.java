@@ -2,7 +2,7 @@ package works.hop.queue.avro;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import works.hop.queue.entity.MockAction;
+import works.hop.queue.entity.MockCriteria;
 import works.hop.queue.entity.QueHandler;
 import works.hop.queue.entity.QueRequest;
 
@@ -16,11 +16,11 @@ public class QueHandlerTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    private QueHandler<MockAction> listener = new QueHandler<>() {
+    private QueHandler<MockCriteria> listener = new QueHandler<>() {
         @Override
-        public MockAction convert(String input) {
+        public MockCriteria convert(String input) {
             try {
-                return mapper.readValue(input, MockAction.class);
+                return mapper.readValue(input, MockCriteria.class);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -28,7 +28,7 @@ public class QueHandlerTest {
         }
 
         @Override
-        public void handle(MockAction message, Consumer<String> handler) {
+        public void handle(MockCriteria message, Consumer<String> handler) {
             handler.accept(new StringBuilder(message.name).append(" is ").append(!message.completed ? " NOT " : " ").append("completed!!").reverse().toString());
         }
 
@@ -40,14 +40,14 @@ public class QueHandlerTest {
 
     @Test
     public void testConvert() {
-        MockAction todo = listener.convert("{\"name\":\"baking\",\"completed\":true}");
+        MockCriteria todo = listener.convert("{\"name\":\"baking\",\"completed\":true}");
         assertNull("expected null for action value", todo.action);
         assertEquals("Expecting 'baking'", "baking", todo.name);
     }
 
     @Test
     public void testHandle() {
-        MockAction todo = new MockAction("swimming", false, "add");
+        MockCriteria todo = new MockCriteria("swimming", false, "add");
         listener.handle(todo, (result) -> {
             assertEquals("!!detelpmoc TON  si gnimmiws", result);
             System.out.println(result);
