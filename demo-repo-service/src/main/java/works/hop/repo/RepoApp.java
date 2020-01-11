@@ -2,8 +2,10 @@ package works.hop.repo;
 
 import com.practicaldime.zesty.app.AppProvider;
 import com.practicaldime.zesty.app.AppServer;
+import com.practicaldime.zesty.app.IServer;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
+import org.apache.commons.cli.Options;
 import works.hop.trace.AppTracer;
 
 import java.util.List;
@@ -15,10 +17,11 @@ public class RepoApp {
     private final TodoDao dao;
     private final Tracer tracer;
     private final AppProvider provider = new AppProvider() {
-        @Override
-        public AppServer provide(Map<String, String> props) {
 
-            AppServer app = AppServer.instance(props);
+        @Override
+        public IServer provide(Map<String, String> props) {
+
+            IServer app = AppServer.instance(props);
             app.post("/todo/{name}", (req, res, done) -> {
                 Span span = tracer.buildSpan("add new item").start();
                 span.log("RepoApp add new todo item");

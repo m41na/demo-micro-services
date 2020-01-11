@@ -1,29 +1,46 @@
 version: '3'
 
 services:
-  repo-service:
+  repo:
     build: ./demo-repo-service
     volumes:
       - ./demo-repo-service/deploy:/usr/local/opt/repo-service
     ports:
       - 7082:7082
       - 8445:8445
+    networks:
+      - demonet
+    hostname: repo
 
-  todo-service:
+  todo:
     build: ./demo-todo-service
     volumes:
       - ./demo-todo-service/deploy:/usr/local/opt/todo-service
     ports:
       - 7079:7079
+    networks:
+      - demonet
+    hostname: todo
     depends_on:
-      - repo-service
+      - repo
+    links:
+      - repo
 
-  rest-service:
+  rest:
     build: ./demo-rest-service
     volumes:
       - ./demo-rest-service/deploy:/usr/local/opt/rest-service
     ports:
       - 7080:7080
       - 8443:8443
+    networks:
+      - demonet
+    hostname: rest
     depends_on:
-      - todo-service
+      - todo
+    links:
+      - todo
+
+networks:
+  demonet:
+    driver: bridge
