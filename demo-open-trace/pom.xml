@@ -15,6 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jaegerVersion>1.1.0</jaegerVersion>
+        <nats.version>2.6.6</nats.version>
     </properties>
 
     <dependencies>
@@ -28,6 +29,12 @@
             <groupId>io.jaegertracing</groupId>
             <artifactId>jaeger-client</artifactId>
             <version>${jaegerVersion}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.nats</groupId>
+            <artifactId>jnats</artifactId>
+            <version>${nats.version}</version>
         </dependency>
 
         <dependency>

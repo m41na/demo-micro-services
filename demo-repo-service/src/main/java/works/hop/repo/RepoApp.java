@@ -5,7 +5,6 @@ import com.practicaldime.zesty.app.AppServer;
 import com.practicaldime.zesty.app.IServer;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
-import org.apache.commons.cli.Options;
 import works.hop.trace.AppTracer;
 
 import java.util.List;

@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+  h2db:
+    image: oscarfonts/h2
+    volumes:
+      - /opt/data:/opt/h2data
+    ports:
+      - 1521:1521
+      - 81:81
+    networks:
+      - demonet
+    hostname: h2db
+    environment:
+      H2_OPTIONS: '-ifNotExists'
+
   repo:
     build: ./demo-repo-service
     volumes:
@@ -11,6 +24,8 @@ services:
     networks:
       - demonet
     hostname: repo
+    depends_on:
+      - h2db
 
   todo:
     build: ./demo-todo-service

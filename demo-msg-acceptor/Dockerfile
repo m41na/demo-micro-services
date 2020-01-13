@@ -1,0 +1,28 @@
+FROM adoptopenjdk/openjdk11:jre-11.0.5_10-alpine
+
+ARG APP_NAME=demoMsgAcceptor
+ARG DEPLOY_DIR=/usr/local/opt/msg-acceptor
+ARG HTTP_PORT=7080
+ARG HTTP_HOST=0.0.0.0
+ARG HTTPS_PORT=8443
+ARG NATS_HOST=nats://dnats
+ARG NATS_PORT=4222
+
+ENV APP_NAME=$APP_NAME
+ENV DEPLOY_DIR=$DEPLOY_DIR
+ENV ASSETS_DIR=$DEPLOY_DIR/www
+ENV HTTP_PORT=$HTTP_PORT
+ENV HTTP_HOST=$HTTP_HOST
+ENV HTTPS_PORT=$HTTPS_PORT
+ENV NATS_HOST=$NATS_HOST
+ENV NATS_PORT=$NATS_PORT
+
+RUN mkdir -p $DEPLOY_DIR
+COPY ./deploy/demo-msg-acceptor-0.0.1-dist.jar $DEPLOY_DIR
+WORKDIR $DEPLOY_DIR
+
+EXPOSE "$HTTP_PORT"
+EXPOSE "$HTTPS_PORT"
+
+RUN echo "demo message acceptor will run in host $HTTP_HOST on port $HTTP_PORT/$HTTPS_PORT"
+CMD java -jar ./demo-msg-acceptor-0.0.1-dist.jar works.hop.rest.RestApp -p "$HTTP_PORT" -h "$HTTP_HOST" -n "$APP_NAME" -httpsPort "$HTTPS_PORT" -assets "$ASSETS_DIR" -todoHost "$NATS_HOST" -todoPort "$NATS_PORT"

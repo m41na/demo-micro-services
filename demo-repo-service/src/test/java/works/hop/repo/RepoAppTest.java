@@ -1,6 +1,5 @@
 package works.hop.repo;
 
-import com.practicaldime.zesty.app.AppServer;
 import com.practicaldime.zesty.app.IServer;
 import com.practicaldime.zesty.testing.server.ZestyJUnit4ClassRunner;
 import com.practicaldime.zesty.testing.server.ZestyProvider;

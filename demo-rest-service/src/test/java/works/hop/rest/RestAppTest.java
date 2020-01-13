@@ -7,7 +7,6 @@ import org.junit.Test;
 import works.hop.queue.client.QueClient;
 import works.hop.todo.domain.TodoCriteria;
 
-import static org.junit.Assert.assertEquals;
 import static works.hop.todo.domain.TodoAction.TODO_LIST;
 
 @Ignore("create more useful, cross-container tests")

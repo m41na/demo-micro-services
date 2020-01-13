@@ -1,0 +1,37 @@
+#create deployments
+kubectl create deployment repo --image=mainacell/demo-repo
+kubectl create deployment todo --image=mainacell/demo-todo
+kubectl create deployment rest --image=mainacell/demo-rest
+
+#view deployments
+$ kubectl get deployment
+NAME   READY   UP-TO-DATE   AVAILABLE   AGE
+repo   1/1     1            1           4s
+rest   1/1     1            1           32s
+todo   1/1     1            1           34s
+
+#view running pods
+$ kubectl get pods
+NAME                    READY   STATUS    RESTARTS   AGE
+repo-559447ffd-rv5md    1/1     Running   0          28m
+rest-85648c5cf6-slbv5   1/1     Running   0          28m
+todo-74cc5fc78b-lhbm9   1/1     Running   0          28m
+
+#view more details of containers in the pods
+kubectl describe pods
+
+#get current state of services
+$ kubectl get services
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   3h39m
+
+#create a new service and expose traffic on port 7083
+kubectl expose deployment/repo --type="NodePort" --port 7083
+kubectl describe services/repo
+
+#extract assigned port
+export NODE_PORT=$(kubectl get services/repo -o go-template='{{(index .spec.ports 0).nodePort}}')
+echo NODE_PORT=$NODE_PORT
+
+#test app through exposed service
+curl $(minikube ip):$NODE_PORT
