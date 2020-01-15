@@ -15,7 +15,7 @@
         <module>demo-queue-client</module>
         <module>demo-http-client</module>
         <module>demo-repo-service</module>
-        <module>demo-msg-acceptor</module>
+        <module>demo-web-acceptor</module>
         <module>demo-open-trace</module>
     </modules>
 

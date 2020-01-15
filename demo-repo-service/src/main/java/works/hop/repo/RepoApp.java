@@ -3,10 +3,9 @@ package works.hop.repo;
 import com.practicaldime.zesty.app.AppProvider;
 import com.practicaldime.zesty.app.AppServer;
 import com.practicaldime.zesty.app.IServer;
-import io.opentracing.Span;
-import io.opentracing.Tracer;
-import works.hop.trace.AppTracer;
+import works.hop.message.client.NatsClient;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +13,7 @@ import java.util.Optional;
 public class RepoApp {
 
     private final TodoDao dao;
-    private final Tracer tracer;
+    private final NatsClient client;
     private final AppProvider provider = new AppProvider() {
 
         @Override
@@ -22,59 +21,43 @@ public class RepoApp {
 
             IServer app = AppServer.instance(props);
             app.post("/todo/{name}", (req, res, done) -> {
-                Span span = tracer.buildSpan("add new item").start();
-                span.log("RepoApp add new todo item");
-
                 String name = req.param("name");
                 dao.addTodoItem(name);
 
                 String payload = String.format("new item {%s} added", name);
                 res.send(payload);
 
-                span.setTag("RepoApp response", payload);
-                span.finish();
+                client.publish("RepoApp add new todo item".getBytes(StandardCharsets.UTF_8));
                 done.complete();
             });
             app.put("/todo", (req, res, done) -> {
-                Span span = tracer.buildSpan("add new item").start();
-                span.log("RepoApp updating todo item");
-
                 TodoDao.Todo todo = req.body(TodoDao.Todo.class);
                 dao.updateTodoItem(todo);
 
                 String payload = String.format("item {%s} updated", todo.name);
                 res.send(payload);
 
-                span.setTag("RepoApp response", payload);
-                span.finish();
+                client.publish("RepoApp updating todo item".getBytes(StandardCharsets.UTF_8));
                 done.complete();
             });
             app.get("/todo", (req, res, done) -> {
-                Span span = tracer.buildSpan("add new item").start();
-                span.log("RepoApp fetching todo items");
-
                 Integer offset = Integer.parseInt(Optional.ofNullable(req.param("start")).orElse("0"));
                 Integer limit = Integer.parseInt(Optional.ofNullable(req.param("size")).orElse("10"));
                 List<TodoDao.Todo> todos = dao.fetchTodoItems(limit, offset);
 
                 res.json(todos);
 
-                span.setTag("RepoApp response", "fetched " + todos.size() + " todo items");
-                span.finish();
+                client.publish("RepoApp fetching todo items".getBytes(StandardCharsets.UTF_8));
                 done.complete();
             });
             app.delete("/todo/{name}", (req, res, done) -> {
-                Span span = tracer.buildSpan("add new item").start();
-                span.log("RepoApp deleting todo item");
-
                 String name = req.param("name");
                 dao.removeTodoItem(name);
 
                 String payload = String.format("removed {%s} item", name);
                 res.send(payload);
 
-                span.setTag("RepoApp response", payload);
-                span.finish();
+                client.publish("RepoApp deleting todo item".getBytes(StandardCharsets.UTF_8));
                 done.complete();
             });
             return app;
@@ -83,16 +66,16 @@ public class RepoApp {
     };
 
     public RepoApp(TodoDao dao) {
-        this(dao, AppTracer.tracer());
+        this(NatsClient.newInstance(), dao);
     }
 
-    public RepoApp(TodoDao dao, Tracer tracer) {
+    public RepoApp(NatsClient client, TodoDao dao) {
         this.dao = dao;
-        this.tracer = tracer;
+        this.client = client;
     }
 
     public static void main(String[] args) {
-        new RepoApp(new TodoDao()).provider.start(args);
+        new RepoApp(new TodoDao()).getProvider().start(args);
     }
 
     public AppProvider getProvider() {

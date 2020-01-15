@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>works.hop</groupId>
-    <artifactId>demo-msg-acceptor</artifactId>
+    <artifactId>demo-web-acceptor</artifactId>
     <version>0.0.1</version>
 
-    <name>demo-msg-acceptor</name>
-    <description>A simple demo messaging consumer.</description>
+    <name>demo-web-acceptor</name>
+    <description>A simple demo messaging web consumer.</description>
     <url>http://www.demomicroservices.com</url>
 
     <properties>
@@ -34,6 +34,13 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

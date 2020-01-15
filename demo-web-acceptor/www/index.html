@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo Acceptor</title>
+</head>
+<body>
+<header>Receiving accepted events...</header>
+<div id="content" style="width: 500px; margin: 20px auto;"></div>
+
+<script>
+    function onLoad(event) {
+        console.log('window loaded - ' + event)
+        if ("WebSocket" in window) {
+
+            let count = 0;
+            let webSocket = new WebSocket("ws://localhost:7081/accept");
+
+            webSocket.onopen = function (event) {
+                receiveMessage(event.data);
+            };
+
+            webSocket.onmessage = function (event) {
+                receiveMessage(event.data);
+            }
+
+            webSocket.onclose = function () {
+                receiveMessage("Connection is closed...");
+            };
+
+            let receiveMessage = (msg) => {
+                if (msg) {
+                    let container = document.getElementById("content");
+                    var newElement = document.createElement("div");
+                    newElement.setAttribute('id', "msg".concat(count++));
+                    newElement.innerHTML = messageTemplate(msg);
+                    container.appendChild(newElement);
+                }
+            }
+
+            let messageTemplate = (msg) => `
+                <p style="padding: 10px; margin: 5px;">
+                    <span>${msg}</span>
+                </p>
+                `;
+        } else {
+            // The browser doesn't support WebSocket
+            alert("WebSocket NOT supported by your Browser!");
+        }
+    }
+
+    //handle window on-loaded
+    window.addEventListener('load', onLoad);
+</script>
+</body>
+</html>

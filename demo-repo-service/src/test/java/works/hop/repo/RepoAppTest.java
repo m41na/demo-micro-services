@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Collections;
-import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -24,7 +23,6 @@ public class RepoAppTest {
 
     public static final Integer PORT = 9099;
     public static final String HOST = "127.0.0.1";
-    public static final Properties props = new Properties();
     private RepoApp app;
 
     @ZestyProvider

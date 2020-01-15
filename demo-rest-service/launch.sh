@@ -4,4 +4,4 @@
 if [ -n "$GRAALVM_HOME" ]; then
   JAVA_HOME=$GRAALVM_HOME
 fi
-"$JAVA_HOME"/bin/java -jar deploy/demo-rest-service-0.0.1-dist.jar com.practicaldime.zesty.app.AppLoader -p 7080 -h localhost -n demoRest -httpsPort 8443 -c app-config.properties
+"$JAVA_HOME"/bin/java -jar deploy/demo-rest-service-0.0.1-dist.jar com.practicaldime.zesty.app.AppLoader -p 7080 -h localhost -n demoRest -httpsPort 8443 -c /app-config.properties

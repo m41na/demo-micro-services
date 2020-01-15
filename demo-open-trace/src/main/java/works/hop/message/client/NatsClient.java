@@ -1,17 +1,11 @@
 package works.hop.message.client;
 
 import io.nats.client.Connection;
-import io.nats.client.Message;
 import io.nats.client.Nats;
 import io.nats.client.Options;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class NatsClient {
 
@@ -23,35 +17,25 @@ public class NatsClient {
 
         try {
             properties.load(NatsClient.class.getResourceAsStream(propsFile));
-            String host = properties.getProperty("nats-host");
-            Integer port = Integer.parseInt(properties.getProperty("nats-port"));
-            Integer reconnect = Integer.parseInt(properties.getProperty("max.reconnect"));
+            String host = properties.getProperty("natsHost");
+            Integer port = Integer.parseInt(properties.getProperty("natsPort"));
+            Integer reconnect = Integer.parseInt(properties.getProperty("maxReconnect"));
             options = new Options.Builder().server("nats://" + host + ":" + port).server("nats://" + host + ":" + port).maxReconnects(reconnect).build();
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not instantiate NatsClient successfully", e);
         }
     }
 
-    private Connection connection() {
+    public static NatsClient newInstance() {
+        return new NatsClient("/nats.properties");
+    }
+
+    public void publish(byte[] message) {
         try (Connection nc = Nats.connect(this.options)) {
-            return nc;
+            nc.publish(properties.getProperty("natsTopic"), message);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could either not create a nats connection or publish a message successfully", e);
         }
-    }
-
-    public void publish(String subject, byte[] message) {
-        connection().publish(subject, message);
-    }
-
-    public void publish(String subject, String replyTo, byte[] message) {
-        connection().publish(subject, replyTo, message);
-    }
-
-    public String request(String subject, byte[] message) throws InterruptedException, ExecutionException, TimeoutException {
-        Future<Message> incoming = connection().request(subject, message);
-        Message msg = incoming.get(500, TimeUnit.MILLISECONDS);
-        return new String(msg.getData(), StandardCharsets.UTF_8);
     }
 }

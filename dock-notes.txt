@@ -1,15 +1,36 @@
 #prepeare ide terminal
 conda deactivate && source ~/.profile && graal && pwd
 
+#find process on a port
+on a mac: sudo lsof -i tcp:<port>
+on linux: netstat -vanp tcp | grep <port>
+on windows: netstat -ano | findstr :<port>
+
+#kill a running process
+on a mac/linux: kill -9 <pid>
+on windows: taskkill /pid <pid>> /f
+
 #to create a private network for the applications, use
 docker network create demo-micro-network
 #to run an application, you can choose to either use -d instead of -it for detached mode
+
+#run nats container
+docker run --rm -d --name dnats -p 4222:4222 -p 6222:6222 -p 8222:8222 nats
+
+#run h2-db container
+docker run --rm -d -p 1521:1521 -p 81:81 -v ~/data:/opt/h2data -e H2_OPTIONS=-ifNotExists --name=h2db oscarfonts/h2
+
+#create docker image for demo-web-acceptor
+cd ./demo-web-acceptor
+docker build -t demo-web-acceptor .
+#test the image in a container
+docker container run --rm -it --name accept -p 7081:7081 -p 8444:8444 --link dnats -e "port=7081" -e "httpsPort=8444" -e "config=/app-config.properties" demo-web-acceptor:latest
 
 #create docker image for demo-repo-service
 cd ./demo-repo-service
 docker build -t demo-repo-service .
 #test the image in a container
-docker container run --rm -it --name repo -p 7082:7082 -p 8445:8445 demo-repo-service:latest
+docker container run --rm -it --name repo -p 7082:7082 -p 8445:8445 --link h2db --link dnats demo-repo-service:latest
 
 #create docker image for demo-todo-service
 cd ./demo-todo-service
@@ -26,6 +47,15 @@ docker container run --rm -it --name rest -p 7080:7080 -p 8443:8443 --link todo 
 #remove these containers
 docker container rm -f $(docker container ls -qa)
 
+#delete these images
+docker image rm -f $(docker image ls -qa)
+
+#ssh into container
+docker exec -it <container_name> /bin/bash
+
+#execute any command in a container
+docker exec -it <container_name> <command>
+
 #start using docker-compose
 docker-compose up
 #use docker-compose start/stop/restart to start/stop/restart containers
@@ -41,11 +71,13 @@ docker-compose -f docker-compose-xxx.yml up -d
 docker build -t demo-repo .
 docker build -t demo-todo .
 docker build -t demo-rest .
+docker build -t demo-accept .
 
 docker image ls
-docker tag d60b134c0345 mainacell/demo-repo:latest
-docker tag ef41d4a98f71 mainacell/demo-todo:latest
-docker tag 52bc4354d786 mainacell/demo-rest:latest
+docker tag <id> mainacell/demo-repo:latest
+docker tag <id> mainacell/demo-todo:latest
+docker tag <id> mainacell/demo-rest:latest
+docker tag <id> mainacell/demo-accept:latest
 
 #push the image to docker hub
 docker push mainacell/demo-repo

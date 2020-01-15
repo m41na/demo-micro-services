@@ -15,7 +15,6 @@ import works.hop.trace.AppTracer;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Properties;
 
 import static works.hop.todo.domain.TodoAction.*;
 
@@ -23,22 +22,7 @@ public class RestApp {
 
     private final Tracer tracer;
     private final ObjectMapper mapper = new ObjectMapper();
-
     private final AppProvider provider = new AppProvider() {
-
-        public Map<String, String> apply(Map<String, String> properties) {
-            //load default values
-            Properties props = new Properties();
-            try {
-                props.load(RestApp.class.getResourceAsStream("/app-config.properties"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //apply defaults if they are available
-            properties.put("todo-port", Optional.ofNullable(props.getProperty("todo-port")).orElse("7079"));
-            properties.put("todo-host", Optional.ofNullable(props.getProperty("todo-host")).orElse("localhost"));
-            return properties;
-        }
 
         @Override
         public IServer provide(Map<String, String> props) {
@@ -160,7 +144,12 @@ public class RestApp {
     }
 
     private QueClient startClient(IServer app) {
-        return QueClient.start(app.locals("todo-host"), Integer.valueOf(app.locals("todo-port")));
+        try {
+            return QueClient.start(app.locals("todoHost"), Integer.valueOf(app.locals("todoPort")));
+        }
+        catch(Exception e){
+            throw new RuntimeException("Could not start a new client connection because of - '" + e.getMessage() + "'", e);
+        }
     }
 
     public AppProvider getProvider() {

@@ -11,7 +11,7 @@ public class AcceptorSocket extends WebSocketAdapter {
 
     private final Set<Session> sessions = new HashSet<>();
 
-    public void broadcast(String message){
+    public void broadcast(String message) {
         sessions.forEach(session -> {
             try {
                 session.getRemote().sendString(message);
@@ -63,15 +63,18 @@ public class AcceptorSocket extends WebSocketAdapter {
 
     public void onConnect(Session session) throws IOException {
         this.sessions.add(session);
+        session.getRemote().sendString("connection accepted");
         System.out.println(session.getRemoteAddress().getHostString() + "connected");
     }
 
     public void onClose(Session session, int status, String reason) throws IOException {
         this.sessions.remove(session);
+        session.getRemote().sendString(String.format("connection closed - status: %d, reason: %s", status, reason));
         System.out.println(session.getRemoteAddress().getHostString() + " closed");
     }
 
     public void onError(Session session, Throwable error) throws IOException {
+        session.getRemote().sendString(String.format("encountered error - error: %s", error.getMessage()));
         System.out.println(session.getRemoteAddress().getHostString() + " error - " + error.getMessage());
     }
 

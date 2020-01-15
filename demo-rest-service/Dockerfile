@@ -25,4 +25,4 @@ EXPOSE "$HTTP_PORT"
 EXPOSE "$HTTPS_PORT"
 
 RUN echo "demo-rest will run in host $HTTP_HOST on port $HTTP_PORT/$HTTPS_PORT"
-CMD java -jar ./demo-rest-service-0.0.1-dist.jar works.hop.rest.RestApp -p "$HTTP_PORT" -h "$HTTP_HOST" -n "$APP_NAME" -httpsPort "$HTTPS_PORT" -assets "$ASSETS_DIR" -todoHost "$TODO_HOST" -todoPort "$TODO_PORT"
+CMD java -jar ./demo-rest-service-0.0.1-dist.jar works.hop.rest.RestApp -p "$HTTP_PORT" -h "$HTTP_HOST" -n "$APP_NAME" -httpsPort "$HTTPS_PORT" -assets "$ASSETS_DIR" -todoHost "$TODO_HOST" -todoPort "$TODO_PORT" -c /app-config.properties
