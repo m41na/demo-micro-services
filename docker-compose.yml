@@ -1,6 +1,48 @@
 version: '3'
 
 services:
+  dnats:
+    image: nats
+    ports:
+      - 4222:4222
+      - 8222:8222
+    networks:
+      - demonet
+    hostname: dnats
+
+  accept:
+    build: ./demo-web-acceptor
+    volumes:
+      - ./demo-web-acceptor/deploy:/usr/local/opt/web-acceptor
+    ports:
+      - 7081:7081
+      - 8444:8444
+    networks:
+      - demonet
+    hostname: accept
+    environment:
+      config: '/app-config.properties'
+      natsHost: dnats
+      natsPort: 4222
+      natsTopic: 'nats-events'
+    depends_on:
+      - dnats
+    links:
+      - dnats
+
+  h2db:
+    image: oscarfonts/h2
+    volumes:
+      - ~/data:/opt/h2data
+    ports:
+      - 1521:1521
+      - 81:81
+    networks:
+      - demonet
+    hostname: h2db
+    environment:
+      H2_OPTIONS: '-ifNotExists'
+
   repo:
     build: ./demo-repo-service
     volumes:
@@ -11,6 +53,12 @@ services:
     networks:
       - demonet
     hostname: repo
+    depends_on:
+      - dnats
+      - h2db
+    links:
+      - dnats
+      - h2db
 
   todo:
     build: ./demo-todo-service
