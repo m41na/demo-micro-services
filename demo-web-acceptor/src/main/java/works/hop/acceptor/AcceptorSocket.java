@@ -2,6 +2,8 @@ package works.hop.acceptor;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -9,9 +11,11 @@ import java.util.Set;
 
 public class AcceptorSocket extends WebSocketAdapter {
 
+    public static final Logger log = LoggerFactory.getLogger(AcceptorSocket.class);
     private final Set<Session> sessions = new HashSet<>();
 
     public void broadcast(String message) {
+        log.info("broadcast '{}' to current [{}] sessions", message, sessions.size());
         sessions.forEach(session -> {
             try {
                 session.getRemote().sendString(message);
@@ -23,6 +27,7 @@ public class AcceptorSocket extends WebSocketAdapter {
 
     @Override
     public void onWebSocketClose(int statusCode, String reason) {
+        log.info("closing connection with status code '{}' and reason '{}'", statusCode, reason);
         try {
             this.onClose(getSession(), statusCode, reason);
         } catch (Exception e) {
@@ -33,6 +38,7 @@ public class AcceptorSocket extends WebSocketAdapter {
 
     @Override
     public void onWebSocketConnect(Session sess) {
+        log.info("accepted new session");
         super.onWebSocketConnect(sess);
         try {
             this.onConnect(getSession());
@@ -53,6 +59,7 @@ public class AcceptorSocket extends WebSocketAdapter {
 
     @Override
     public void onWebSocketText(String message) {
+        log.info("received new message: '{}'", message);
         super.onWebSocketText(message);
         try {
             this.onMessage(getSession(), message);

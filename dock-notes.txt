@@ -62,10 +62,12 @@ docker-compose up
 
 #to run shell in running container
 docker-compose exec [app] /bin/bash
+#for alpine-based images, use /bin/sh instead of /bin/bash
 
 #to override values in docker-compose, use a docker-compose-override.yml
 #to specify docker compose file to load, use -f switch
 docker-compose -f docker-compose-xxx.yml up -d
+#to recreate containers even if their configuration and image haven't changed, use --force-recreate
 
 #to upload you image, first log into docker hub, then build the image, and then tag the image
 docker build -t demo-repo .

@@ -1,6 +1,8 @@
 package works.hop.acceptor;
 
 import io.nats.client.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -9,6 +11,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class AcceptorClient {
 
+    public static final Logger log = LoggerFactory.getLogger(AcceptorClient.class);
     private final Options options;
     private final Acceptor acceptor;
 
@@ -33,6 +36,7 @@ public class AcceptorClient {
     public void publish(String topic, String message) {
         try (Connection nc = Nats.connect(this.options)) {
             nc.publish(topic, message.getBytes(StandardCharsets.UTF_8));
+            log.info("published new message: '{}' to the topic '{}'", message, topic);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -59,12 +63,14 @@ public class AcceptorClient {
 
         private void subscribe() {
             //create subscription
+            log.info("creating new subscription");
             try (Connection nc = Nats.connect(this.options)) {
                 this.dispatcher = nc.createDispatcher((msg) -> {
                 });
                 this.subscription = dispatcher.subscribe(this.topic, this::accept);
 
                 this.latch.await();
+                log.info("latch has been unlocked and the subscription will terminate");
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace(System.err);
                 throw new RuntimeException(e);
