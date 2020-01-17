@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  todo-service
+  labels:
+    app: todo
+    type: todo-app
+spec:
+  containers:
+    - name:  todo-service
+      image: demo-todo-service

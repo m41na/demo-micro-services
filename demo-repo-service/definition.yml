@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  repo-service
+  labels:
+    app: repo
+    type: db-repo-app
+spec:
+  containers:
+    - name:  repo-service
+      image: demo-repo-service

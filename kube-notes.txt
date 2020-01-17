@@ -1,7 +1,38 @@
+#kubernetes deployment file required fields
+apiVersion:
+kind:
+metadata:
+spec:
+
+#deployment kinds and version
+KIND                VERSION
+---------------------------------
+1.  POD             v1
+2.  Service         v1
+3.  Replica Set     apps/v1
+4.  Deployment      apps/v1
+
+#deployment metadata
+metadata:
+  name:  my-app-pod
+  labels:
+    app: my-app
+    type: front-end
+
+#deployment spec
+spec:
+  containers:
+    - name:  nginx-container
+      image: nginx
+
+#start kubernetes cluster (using minikube for testing)
+minikube start --vm-driver=virtualbox (or hyperv on windows or hyperkit on a mac)
+
+#check status of kubernetes cluster
+minikube status
+
 #create deployments
-kubectl create deployment repo --image=mainacell/demo-repo
-kubectl create deployment todo --image=mainacell/demo-todo
-kubectl create deployment rest --image=mainacell/demo-rest
+kubectl create -f definition.yml
 
 #view deployments
 $ kubectl get deployment
@@ -9,6 +40,19 @@ NAME   READY   UP-TO-DATE   AVAILABLE   AGE
 repo   1/1     1            1           4s
 rest   1/1     1            1           32s
 todo   1/1     1            1           34s
+
+#view deployments in all the namespaces
+kubectl get deployments --all-namespaces
+NAMESPACE              NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+default                repo                        0/1     1            0           5d
+default                rest                        0/1     1            0           5d
+default                todo                        0/1     1            0           5d
+
+#You can delete all the pods in a single namespace with this command:
+kubectl delete --all pods --namespace=foo
+
+#You can also delete all the deployments in a single namespace with this command:
+kubectl delete --all deployments --namespace=foo
 
 #view running pods
 $ kubectl get pods

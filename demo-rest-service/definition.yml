@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  rest-service
+  labels:
+    app: rest
+    type: web-app
+spec:
+  containers:
+    - name:  rest-service
+      image: demo-rest-service

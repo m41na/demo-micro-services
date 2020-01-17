@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  web-acceptor
+  labels:
+    app: web-acceptor
+    type: web-app
+spec:
+  containers:
+    - name:  web-acceptor
+      image: demo-web-acceptor
